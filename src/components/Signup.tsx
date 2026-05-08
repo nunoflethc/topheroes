@@ -1,8 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { User, Mail, Lock, ShieldCheck, ArrowRight } from 'lucide-react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { User, Lock, ShieldCheck, ArrowRight } from 'lucide-react';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../firebase';
 
 interface SignupProps {
@@ -12,7 +12,6 @@ interface SignupProps {
 
 export default function Signup({ onSuccess, onNavigateLogin }: SignupProps) {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
@@ -27,10 +26,16 @@ export default function Signup({ onSuccess, onNavigateLogin }: SignupProps) {
     }
     setLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const fakeEmail = `${username.toLowerCase().trim()}@topheroes.app`;
+      const userCredential = await createUserWithEmailAndPassword(auth, fakeEmail, password);
+      await updateProfile(userCredential.user, { displayName: username });
       onSuccess();
     } catch (err: any) {
-      setError('Erro ao criar conta. Tenta outro email.');
+      if (err.code === 'auth/email-already-in-use') {
+        setError('Username já existe. Escolhe outro.');
+      } else {
+        setError('Erro ao criar conta. Tenta novamente.');
+      }
     } finally {
       setLoading(false);
     }
@@ -47,7 +52,7 @@ export default function Signup({ onSuccess, onNavigateLogin }: SignupProps) {
       
       <header className="mb-8">
         <h2 className="font-display text-2xl font-bold text-on-surface mb-1">New Operator</h2>
-        <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-[0.2em]">Initialize completionist profile</p>
+        <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-[0.2em]">Initialize your profile</p>
       </header>
 
       <form className="space-y-6" onSubmit={handleSubmit}>
@@ -61,21 +66,6 @@ export default function Signup({ onSuccess, onNavigateLogin }: SignupProps) {
               type="text"
               value={username}
               onChange={e => setUsername(e.target.value)}
-              required
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <label className="font-mono text-[10px] text-primary uppercase tracking-widest block">Email Address</label>
-          <div className="relative">
-            <Mail className="absolute left-0 top-1/2 -translate-y-1/2 text-on-surface-variant/50" size={16} />
-            <input 
-              className="quest-input w-full pl-8" 
-              placeholder="nexus@questlog.com" 
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
               required
             />
           </div>

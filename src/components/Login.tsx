@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Mail, Lock, Eye, ArrowRight } from 'lucide-react';
+import { User, Lock, ArrowRight } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 
@@ -11,7 +11,7 @@ interface LoginProps {
 }
 
 export default function Login({ onSuccess, onNavigateSignup }: LoginProps) {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,10 +21,11 @@ export default function Login({ onSuccess, onNavigateSignup }: LoginProps) {
     setError('');
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const fakeEmail = `${username.toLowerCase().trim()}@topheroes.app`;
+      await signInWithEmailAndPassword(auth, fakeEmail, password);
       onSuccess();
     } catch (err: any) {
-      setError('Credenciais inválidas. Tenta novamente.');
+      setError('Username ou password incorretos.');
     } finally {
       setLoading(false);
     }
@@ -39,44 +40,36 @@ export default function Login({ onSuccess, onNavigateSignup }: LoginProps) {
     >
       <header className="mb-8">
         <h2 className="font-display text-2xl font-bold text-on-surface mb-1">Welcome Back, Operator</h2>
-        <p className="font-sans text-sm text-on-surface-variant font-medium">Ready to resume your completionist journey?</p>
+        <p className="font-sans text-sm text-on-surface-variant font-medium">Ready to resume your quest?</p>
       </header>
 
       <form className="space-y-6" onSubmit={handleSubmit}>
         <div className="space-y-2">
           <label className="font-mono text-[10px] text-primary-container flex items-center gap-2 uppercase tracking-widest">
-            <Mail size={14} /> IDENTIFIER
+            <User size={14} /> USERNAME
           </label>
           <input 
             className="quest-input w-full rounded-t-lg" 
-            placeholder="Email" 
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
+            placeholder="OPERATOR_X" 
+            type="text"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
             required
           />
         </div>
 
         <div className="space-y-2">
           <label className="font-mono text-[10px] text-primary-container flex items-center gap-2 uppercase tracking-widest">
-            <Lock size={14} /> ACCESS KEY
+            <Lock size={14} /> PASSWORD
           </label>
-          <div className="relative">
-            <input 
-              className="quest-input w-full rounded-t-lg" 
-              placeholder="••••••••" 
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-            />
-            <button 
-              type="button"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors p-1"
-            >
-              <Eye size={16} />
-            </button>
-          </div>
+          <input 
+            className="quest-input w-full rounded-t-lg" 
+            placeholder="••••••••" 
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+          />
         </div>
 
         {error && (
@@ -97,12 +90,12 @@ export default function Login({ onSuccess, onNavigateSignup }: LoginProps) {
 
       <footer className="mt-8 pt-8 border-t border-outline-variant/20 text-center">
         <p className="font-sans text-on-surface-variant text-sm font-medium">
-          New to the terminal? 
+          New operator?
           <button 
             onClick={onNavigateSignup}
             className="text-primary hover:underline underline-offset-4 ml-1 font-bold"
           >
-            Initialize Account
+            Create Account
           </button>
         </p>
       </footer>

@@ -9,11 +9,11 @@ import { Task, AppScreen } from './types';
 import { auth } from './firebase';
 
 const INITIAL_TASKS: Task[] = [
-  { id: '1', title: 'Initialize Avatar Rigging Protocols', status: 'active', priority: 'routine' },
-  { id: '2', title: 'Finalize Neon District Environment Map', status: 'active', priority: 'high' },
-  { id: '3', title: 'Resource Extraction: 15 Rare Ore Samples', status: 'active', priority: 'routine' },
-  { id: '4', title: 'System Diagnostic & Team Performance Review', status: 'active', priority: 'scheduled' },
-  { id: '5', title: 'Update Security Encryption Keys', status: 'active', priority: 'security' },
+  { id: '1', title: 'Legion Boss', status: 'active', priority: 'routine' },
+  { id: '2', title: 'Titan Boss', status: 'active', priority: 'high' },
+  { id: '3', title: 'Melting snow', status: 'active', priority: 'routine' },
+  { id: '4', title: 'Treasure Hunt', status: 'active', priority: 'scheduled' },
+  { id: '5', title: 'Mining', status: 'active', priority: 'security' },
 ];
 
 export default function App() {
@@ -21,7 +21,7 @@ export default function App() {
   const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
   const [filter, setFilter] = useState<'all' | 'active' | 'done'>('all');
 
-  const username = auth.currentUser?.displayName || 'Operator';
+  const username = auth.currentUser?.displayName || 'Hero';
 
   const filteredTasks = tasks.filter(t => {
     if (filter === 'active') return t.status === 'active';
@@ -116,8 +116,8 @@ export default function App() {
                   <section className="glass-panel border-outline-variant/20 rounded-3xl p-8 space-y-8">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                       <div>
-                        <h2 className="font-display text-2xl font-black text-on-surface uppercase tracking-tight">Quest Log</h2>
-                        <p className="font-sans text-sm text-on-surface-variant font-medium">Active missions, {username}</p>
+                        <h2 className="font-display text-2xl font-black text-on-surface uppercase tracking-tight">Tasks Log</h2>
+                        <p className="font-sans text-sm text-on-surface-variant font-medium">Active Tasks, {username}</p>
                       </div>
                       <div className="flex gap-4 p-1 bg-surface-container-high/50 rounded-lg backdrop-blur-sm border border-outline-variant/30">
                         {(['all', 'active', 'done'] as const).map(f => (
